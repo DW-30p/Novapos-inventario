@@ -134,7 +134,7 @@ export function ProductList({ products, onEdit, onDelete, isLoading }: ProductLi
                     <SelectItem value="all">Todas las categorías</SelectItem>
                     <SelectItem value="uncategorized">Sin categoría</SelectItem>
                     {categories.map((cat) => (
-                      <SelectItem key={cat} value={cat}>
+                      <SelectItem key={cat} value={cat || ""}>
                         {cat}
                       </SelectItem>
                     ))}

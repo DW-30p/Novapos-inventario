@@ -52,7 +52,8 @@ export class DatabaseStorage implements IStorage {
       .insert(inventoryProducts)
       .values({
         ...product,
-        updatedAt: new Date(),
+        price: product.price.toString(),
+        cost: product.cost ? product.cost.toString() : null,
       })
       .returning();
     return newProduct;
@@ -74,12 +75,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateProduct(id: number, product: UpdateProduct): Promise<Product | undefined> {
+    const updateData: any = {
+      ...product,
+    };
+    
+    // Convert numeric fields to strings for PostgreSQL numeric type
+    if (product.price !== undefined) {
+      updateData.price = product.price.toString();
+    }
+    if (product.cost !== undefined) {
+      updateData.cost = product.cost ? product.cost.toString() : null;
+    }
+    
     const [updatedProduct] = await db
       .update(inventoryProducts)
-      .set({
-        ...product,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(inventoryProducts.id, id))
       .returning();
     return updatedProduct || undefined;
